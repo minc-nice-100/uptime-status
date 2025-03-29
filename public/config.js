@@ -22,7 +22,7 @@ window.Config = {
   Navi: [
     {
       text: 'Home',
-      url: '/'
+      url: 'https://status.itedev.com/'
     },
     {
       text: 'Blog',
