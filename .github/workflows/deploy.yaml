@@ -2,32 +2,35 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # 根据你的主分支名称调整（可能是 master）
+    branches: [main]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install --unsafe-perm
 
+      - name: Update Browserslist (可选)
+        run: npx update-browserslist-db@latest
+
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build
+          ls -al build  # 验证构建目录内容
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # 根据实际构建目录调整
-          keep_files: false     # 每次部署前清理旧文件
+          publish_dir: ./build
+          enable_jekyll: false
