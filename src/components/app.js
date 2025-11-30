@@ -55,12 +55,11 @@ function App() {
           ))}
         </div>
 
-        <div id='footer'>       
-          <p><b>无论如何, 你已经很棒了!</b></p>
+        <div id='footer'>
           <p title={`约 ${calculateYears} 年`}>
-            已经坚持了 <b>{timeDiff.days}</b> 天 {timeDiff.hours} 时 {timeDiff.minutes} 分
+            无论如何, 你已经很棒了! 已经坚持 <b>{timeDiff.days}</b> 天 {timeDiff.hours} 小时 {timeDiff.minutes} 分钟啦~
           </p>
-          <p>Copr. 2025 Ited Blog</p>
+          <p>Copr. 2022 Ited Blog</p>
         </div>
       </div>
     </>
