@@ -1,39 +1,38 @@
-# 站点状态监控
-- 本项目可以直接部署，快速上线，纯静态无需服务器。基于 UptimeRobot api 时时监控主机、网站、端口等在线状态；
+# Uptime Status
 
-## 在线体验：  
-美化版：<https://tjys.vercel.app>  
-![](https://gcore.jsdelivr.net/gh/Qikaile/cdn/img/Snipaste_2022-08-09_09-25-53.jpg)
+基于 UptimeRobot API 的站点状态监控页面，通过 Cloudflare Pages 部署，纯静态 + Cloudflare Functions 代理 API 请求。
 
-## 如何复用这个项目？  
-1- fork 一份到你的 github 账号下；
-2- 修改 `config.js` 文件：
-   （1） `SiteName`: 要显示的网站名称
-   （2）修改配置文件：`ApiKeys`: 从 UptimeRobot 获取的 API Key，支持 Monitor-Specific API Keys 和 Read-Only API Key，**强烈建议使用 Read-Only API  key**
+## 部署
 
-<https://uptimerobot.com/dashboard#mySettings> 如下图；  
-![](https://gcore.jsdelivr.net/gh/Qikaile/cdn/img/warn.png.png)  
-   （3）`CountDays`: 要显示的日志天数，建议 60 或 90，显示效果比较好
-   （4）`ShowLink`: 是否显示站点链接
-   （5） `Navi`: 导航栏的菜单列表
-3- 绑定网站域名，恭喜部署完成！
-可以使用Vercel部署网站，登录vercel官网注册账号并绑定Github,导入新项，选择导入Git存储库，选择个人账号，点击部署。
+1. Fork 本项目
+2. 在 Cloudflare Pages 中导入仓库
+3. 构建命令: `npm run build`，输出目录: `build`
+4. 修改 `public/config.js`:
+   - `SiteName`: 站点名称
+   - `CountDays`: 显示天数（默认 90）
+   - `ShowLink`: 是否显示站点链接
+   - `Navi`: 导航栏菜单
+5. **无需配置 API Key** — 密钥在 `functions/api.js` 后端注入
 
 ## 本地调试
-### 安装依赖
+
 ```
-npm i --unsafe-perm=true
-```
-### 运行
-```
+npm install
 npm run start
 ```
-### 打包
+
+## 打包
+
 ```
 npm run build
 ```
 
-## 说明：
-本项目是来自原作的简化版：https://github.com/yb/uptime-status
+## 说明
 
-本项目来自美化版：https://github.com/imsyy/status 
+- 前端通过 Cloudflare Functions (`functions/api.js`) 代理 UptimeRobot API，绕过 GFW
+- API Key 在后端注入，不暴露到前端
+- 前端基于日志自行计算每日可用率，不依赖 `custom_uptime_ranges`
+- GET 请求支持 Cloudflare CDN 边缘缓存
+
+原项目: https://github.com/yb/uptime-status
+美化版: https://github.com/imsyy/status
