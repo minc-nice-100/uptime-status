@@ -30,6 +30,11 @@ function UptimeRobot() {
     });
   }, [CountDays]);
 
+  // react-tooltip v4 needs manual rebuild after data-driven DOM changes
+  useEffect(() => {
+    if (monitors) ReactTooltip.rebuild();
+  }, [monitors]);
+
   if (monitors) return monitors.map((site) => (
     <div key={site.id} className='site'>
       <div className='meta'>
@@ -65,7 +70,7 @@ function UptimeRobot() {
         </span>
         <span className='summary-day'>{formatDate(site.daily[site.daily.length - 1].date)}</span>
       </div>
-      <ReactTooltip className='tooltip' place='top' type='dark' effect='solid' />
+      <ReactTooltip className='tooltip' place='bottom' type='dark' effect='solid' />
     </div>
   ));
 
