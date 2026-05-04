@@ -1,24 +1,21 @@
-// 配置
+// Configuration
 window.Config = {
 
-  // 显示标题
+  // Display title
   SiteName: 'Ited Blog Status Page',
 
-  // UptimeRobot Api Keys
-  // 支持 Monitor-Specific 和 Read-Only
-  ApiKeys: [
-    'ur3124949-1008203940969c70491a03f3',
-  ],
+  // API keys are handled on the backend
+  ApiKeys: [],
 
-    // 日志天数
-  // 虽然免费版说仅保存60天日志，但测试好像API可以获取90天的
-  // 不过时间不要设置太长，容易卡，接口请求也容易失败
+    // Log days
+  // Although the free version claims to save logs for only 60 days, testing shows API can retrieve 90 days
+  // However, don't set the time too long as it may cause lag and API requests may fail
   CountDays: 90,
 
-  // 是否显示检测站点的链接
+  // Whether to show links to monitored sites
   ShowLink: true,
 
-  // 导航栏菜单
+  // Navigation menu
   Navi: [
     {
       text: 'Home',
