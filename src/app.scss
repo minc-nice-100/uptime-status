@@ -336,6 +336,9 @@ a {
       padding: 6px 9px !important;
       border-radius: 5px !important;
       transition: 0.2s;
+      &::before, &::after {
+        display: none !important;
+      }
     }
   }
 
