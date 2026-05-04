@@ -4,11 +4,6 @@ window.Config = {
   // 显示标题
   SiteName: 'Ited Blog Status Page',
 
-  // UptimeRobot Api Keys
-  // 支持 Monitor-Specific 和 Read-Only
-  ApiKeys: [
-    'ur3124949-1008203940969c70491a03f3',
-  ],
 
     // 日志天数
   // 虽然免费版说仅保存60天日志，但测试好像API可以获取90天的
