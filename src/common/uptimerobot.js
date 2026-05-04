@@ -26,8 +26,16 @@ export async function GetMonitors(apikey, days) {
     custom_uptime_ranges: ranges.join('-'),
   };
 
-  const response = await axios.post('/api', postdata, {
-    timeout: 10000
+  const formData = new URLSearchParams();
+  for (const [key, value] of Object.entries(postdata)) {
+    formData.append(key, value);
+  }
+
+  const response = await axios.post('/api', formData, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    timeout: 30000
   });
   if (response.data.stat !== 'ok') {
     document.getElementById('status-text').style.display = 'none';
