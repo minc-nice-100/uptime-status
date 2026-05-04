@@ -25,9 +25,23 @@ function UptimeRobot() {
   const [monitors, setMonitors] = useState();
 
   useEffect(() => {
-    GetMonitors(CountDays).then(setMonitors).catch(err => {
-      console.error(err);
-    });
+    let cancelled = false;
+
+    function fetchData() {
+      GetMonitors(CountDays).then(data => {
+        if (!cancelled) setMonitors(data);
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+
+    fetchData();
+    const timer = setInterval(fetchData, 60000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
   }, [CountDays]);
 
   // react-tooltip v4 needs manual rebuild after data-driven DOM changes
