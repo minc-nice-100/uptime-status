@@ -8,14 +8,13 @@ export async function GetMonitors(days) {
 
   const dates = [];
   const today = dayjs(new Date().setHours(0, 0, 0, 0));
+  const secondsPerDay = 86400;
   for (let d = 0; d < days; d++) {
     dates.push(today.subtract(d, 'day'));
   }
 
-  const ranges = dates.map((date) => `${date.unix()}_${date.add(1, 'day').unix()}`);
   const start = dates[dates.length - 1].unix();
   const end = dates[0].add(1, 'day').unix();
-  ranges.push(`${start}_${end}`);
 
   const postdata = {
     format: 'json',
@@ -23,7 +22,6 @@ export async function GetMonitors(days) {
     log_types: '1-2',
     logs_start_date: start,
     logs_end_date: end,
-    custom_uptime_ranges: ranges.join('-'),
   };
 
   const params = new URLSearchParams();
@@ -46,35 +44,45 @@ export async function GetMonitors(days) {
   };
   return response.data.monitors.map((monitor) => {
 
-    const ranges = monitor.custom_uptime_ranges.split('-');
-    const average = formatNumber(ranges.pop());
-    const daily = [];
-    const map = [];
-    dates.forEach((date, index) => {
-      map[date.format('YYYYMMDD')] = index;
-      daily[index] = {
-        date: date,
-        uptime: formatNumber(ranges[index]),
-        down: {
-          times: 0,
-          duration: 0
-        },
+    // Build daily downtime map from logs, compute uptime %
+    const dailyDowntime = {};
+    dates.forEach((date) => {
+      dailyDowntime[date.format('YYYYMMDD')] = { duration: 0, times: 0 };
+    });
+
+    let totalDuration = 0;
+    let totalTimes = 0;
+
+    monitor.logs.forEach((log) => {
+      if (log.type === 1) {
+        const date = dayjs.unix(log.datetime).format('YYYYMMDD');
+        if (dailyDowntime[date]) {
+          dailyDowntime[date].duration += log.duration;
+          dailyDowntime[date].times += 1;
+        }
+        totalDuration += log.duration;
+        totalTimes += 1;
       }
     });
 
-    const total = monitor.logs.reduce((total, log) => {
-      if (log.type === 1) {
-        const date = dayjs.unix(log.datetime).format('YYYYMMDD');
-        total.duration += log.duration;
-        total.times += 1;
-        daily[map[date]].down.duration += log.duration;
-        daily[map[date]].down.times += 1;
-      }
-      return total;
-    }, {
-      times: 0,
-      duration: 0
+    // Build daily array with computed uptime
+    let totalUptime = 0;
+    const daily = dates.map((date) => {
+      const key = date.format('YYYYMMDD');
+      const down = dailyDowntime[key];
+      const uptime = Math.max(0, Math.min(100, 100 - (down.duration / secondsPerDay) * 100));
+      totalUptime += uptime;
+      return {
+        date: date,
+        uptime: formatNumber(uptime),
+        down: {
+          times: down.times,
+          duration: down.duration
+        },
+      };
     });
+
+    const average = formatNumber(totalUptime / dates.length);
 
     const result = {
       id: monitor.id,
@@ -82,7 +90,10 @@ export async function GetMonitors(days) {
       url: monitor.url,
       average: average,
       daily: daily,
-      total: total,
+      total: {
+        times: totalTimes,
+        duration: totalDuration
+      },
       status: 'unknow',
     };
 
