@@ -17,7 +17,9 @@ function UptimeRobot({ apikey }) {
   const [monitors, setMonitors] = useState();
 
   useEffect(() => {
-    GetMonitors(apikey, CountDays).then(setMonitors);
+    GetMonitors(apikey, CountDays).then(setMonitors).catch(err => {
+      console.error(err);
+    });
   }, [apikey, CountDays]);
 
   if (monitors) return monitors.map((site) => (
