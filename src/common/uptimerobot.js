@@ -4,7 +4,7 @@ import {
   formatNumber
 } from './helper';
 
-export async function GetMonitors(apikey, days) {
+export async function GetMonitors(days) {
 
   const dates = [];
   const today = dayjs(new Date().setHours(0, 0, 0, 0));

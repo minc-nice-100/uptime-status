@@ -1,19 +1,10 @@
 import { useMemo, useState, useEffect } from 'react';
-import Link from './link';
 import Header from './header';
 import UptimeRobot from './uptimerobot';
 import Package from '../../package.json';
 
 function App() {
 
-  const apikeys = useMemo(() => {
-    const { ApiKeys } = window.Config;
-    if (Array.isArray(ApiKeys)) return ApiKeys;
-    if (typeof ApiKeys === 'string') return [ApiKeys];
-    return [];
-  }, []);
-
-  // 实时计算从2022.5.1 18:00到现在的时间差
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -50,9 +41,7 @@ function App() {
       <Header />
       <div className='container'>
         <div id='uptime'>
-          {apikeys.map((key) => (
-            <UptimeRobot key={key} apikey={key} />
-          ))}
+          <UptimeRobot />
         </div>
 
         <div id='footer'>
