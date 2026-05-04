@@ -18,10 +18,6 @@ window.Config = {
   // Navigation menu
   Navi: [
     {
-      text: 'Home',
-      url: 'https://status.itedev.com/'
-    },
-    {
       text: 'Blog',
       url: 'https://itedev.com/'
     }
