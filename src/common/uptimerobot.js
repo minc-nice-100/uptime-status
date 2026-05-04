@@ -27,7 +27,7 @@ export async function GetMonitors(apikey, days) {
     custom_uptime_ranges: ranges.join('-'),
   };
 
-  const response = await axios.post('https://api.uptimerobot.com.mirror.itedev.com/v2/getMonitors', postdata, {
+  const response = await axios.post('/api', postdata, {
     timeout: 10000
   });
   if (response.data.stat !== 'ok') {
