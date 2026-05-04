@@ -26,15 +26,13 @@ export async function GetMonitors(days) {
     custom_uptime_ranges: ranges.join('-'),
   };
 
-  const formData = new URLSearchParams();
+  const params = new URLSearchParams();
   for (const [key, value] of Object.entries(postdata)) {
-    formData.append(key, value);
+    params.append(key, value);
   }
 
-  const response = await axios.post('/api', formData, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+  const response = await axios.get('/api', {
+    params,
     timeout: 30000
   });
   if (response.data.stat !== 'ok') {

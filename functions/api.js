@@ -17,30 +17,29 @@ export async function onRequest(context) {
 
   try {
     const targetUrl = 'https://api.uptimerobot.com/v2/getMonitors';
+    const apiKey = 'ur3124949-1008203940969c70491a03f3';
 
-    // Prepare the request options
+    // Build form-encoded body from GET query params or POST body
+    let formData;
+    if (request.method === 'GET') {
+      formData = new URLSearchParams(url.search);
+    } else {
+      const bodyText = await request.text();
+      formData = new URLSearchParams(bodyText);
+    }
+    formData.set('api_key', apiKey);
+
     const options = {
-      method: request.method,
+      method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: formData.toString(),
     };
 
-    // Add body for POST requests
-    if (request.method === 'POST') {
-      const bodyText = await request.text();
-      const formData = new URLSearchParams(bodyText);
-      formData.set('api_key', 'ur3124949-1008203940969c70491a03f3');
-      options.body = formData.toString();
-    }
-
-    // Make the request to UptimeRobot API
     const upstreamResponse = await fetch(targetUrl, options);
-
-    // Get response data
     const responseData = await upstreamResponse.json();
 
-    // Return the response from UptimeRobot API
     return new Response(JSON.stringify(responseData), {
       status: upstreamResponse.status,
       headers: {
