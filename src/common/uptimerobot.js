@@ -44,7 +44,7 @@ export async function GetMonitors(days) {
   };
   return response.data.monitors.map((monitor) => {
 
-    // Build daily downtime map from logs, compute uptime %
+    // Build daily downtime map from logs, splitting cross-day events
     const dailyDowntime = {};
     dates.forEach((date) => {
       dailyDowntime[date.format('YYYYMMDD')] = { duration: 0, times: 0 };
@@ -55,11 +55,27 @@ export async function GetMonitors(days) {
 
     monitor.logs.forEach((log) => {
       if (log.type === 1) {
-        const date = dayjs.unix(log.datetime).format('YYYYMMDD');
-        if (dailyDowntime[date]) {
-          dailyDowntime[date].duration += log.duration;
-          dailyDowntime[date].times += 1;
+        const downStart = dayjs.unix(log.datetime);
+        const downEnd = downStart.add(log.duration, 'second');
+        let remaining = log.duration;
+        let cursor = downStart;
+
+        // Split across calendar days
+        while (remaining > 0 && cursor.isBefore(downEnd)) {
+          const dayEnd = cursor.endOf('day');
+          const segEnd = dayEnd.isAfter(downEnd) ? downEnd : dayEnd;
+          const segDuration = segEnd.diff(cursor, 'second');
+
+          const key = cursor.format('YYYYMMDD');
+          if (dailyDowntime[key] !== undefined) {
+            dailyDowntime[key].duration += segDuration;
+            dailyDowntime[key].times += 1;
+          }
+
+          remaining -= segDuration;
+          cursor = segEnd;
         }
+
         totalDuration += log.duration;
         totalTimes += 1;
       }
