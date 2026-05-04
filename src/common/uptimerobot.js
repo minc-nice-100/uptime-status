@@ -18,7 +18,6 @@ export async function GetMonitors(apikey, days) {
   ranges.push(`${start}_${end}`);
 
   const postdata = {
-    api_key: apikey,
     format: 'json',
     logs: 1,
     log_types: '1-2',

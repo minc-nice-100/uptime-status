@@ -16,17 +16,7 @@ export async function onRequest(context) {
   }
 
   try {
-    // Extract the actual API endpoint from query params
-    const endpoint = url.searchParams.get('endpoint');
-    if (!endpoint) {
-      return new Response(JSON.stringify({ error: 'Missing endpoint parameter' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Construct the target URL
-    const targetUrl = `https://api.uptimerobot.com/v2/getMonitors`;
+    const targetUrl = 'https://api.uptimerobot.com/v2/getMonitors';
 
     // Prepare the request options
     const options = {
@@ -38,7 +28,10 @@ export async function onRequest(context) {
 
     // Add body for POST requests
     if (request.method === 'POST') {
-      options.body = await request.text();
+      const bodyText = await request.text();
+      const formData = new URLSearchParams(bodyText);
+      formData.set('api_key', 'ur3124949-1008203940969c70491a03f3');
+      options.body = formData.toString();
     }
 
     // Make the request to UptimeRobot API
