@@ -46,6 +46,8 @@ export async function onRequest(context) {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=60, s-maxage=300',
+        'CDN-Cache-Control': 'public, max-age=300',
       },
     });
   } catch (error) {
